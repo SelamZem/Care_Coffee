@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+  <h2>Login</h2>
+  <form method="POST" novalidate>
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+    
+    <div>
+      {{ form.username_or_email.label_tag }}
+      {{ form.username_or_email }}
+      {{ form.username_or_email.errors }}
+    </div>
+
+    <div>
+      {{ form.password.label_tag }}
+      {{ form.password }}
+      {{ form.password.errors }}
+    </div>
+
+    <button type="submit">Log In</button>
+  </form>
+  <a href="{% provider_login_url 'google' method='oauth2' %}">
+  <button type="button">Log in with Google</button>
+</a>
+
+{% endblock %}

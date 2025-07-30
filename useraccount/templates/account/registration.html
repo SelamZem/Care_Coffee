@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User Registration</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load socialaccount %}
+{% block content %}
     <h2>Register</h2>
 
     <form method="post">
@@ -33,5 +30,7 @@
 
         <button type="submit">Register</button>
     </form>
-</body>
-</html>
+    <a href="{% provider_login_url 'google' method='oauth2' %}">
+    <button type="button">Sign up with Google</button>
+</a>
+{% endblock %}
