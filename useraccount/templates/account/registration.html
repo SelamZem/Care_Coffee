@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% load socialaccount %}
 {% block content %}
-    <h2>Register</h2>
+<div class="form-card">
+    <div class="top-right-link">
+        Already have an account? <a href="{% url 'account:login' %}">Login</a>
+    </div>
+
+    <h2>Sign Up</h2>
 
     <form method="post">
         {% csrf_token %}
@@ -17,7 +22,7 @@
         {% for field in form %}
             <p>
                 {{ field.label_tag }}<br>
-                {{ field }}<br>
+                {{ field }}
                 {% if field.errors %}
                     <ul>
                         {% for error in field.errors %}
@@ -28,9 +33,9 @@
             </p>
         {% endfor %}
 
-        <button type="submit">Register</button>
+        <button type="submit">Sign Up</button>
     </form>
-    <a href="{% provider_login_url 'google' method='oauth2' %}">
-    <button type="button">Sign up with Google</button>
-</a>
+
+    <a href="{% provider_login_url 'google' method='oauth2' %}" class="google-btn">Sign Up with Google</a>
+</div>
 {% endblock %}

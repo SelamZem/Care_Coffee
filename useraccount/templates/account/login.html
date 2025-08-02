@@ -1,29 +1,41 @@
 {% extends "base.html" %}
 {% load socialaccount %}
-
 {% block content %}
-  <h2>Login</h2>
-  <form method="POST" novalidate>
-    {% csrf_token %}
-
-    {{ form.non_field_errors }}
-    
-    <div>
-      {{ form.username_or_email.label_tag }}
-      {{ form.username_or_email }}
-      {{ form.username_or_email.errors }}
+<div class="form-card">
+    <div class="top-right-link">
+        Don't have an account? <a href="{% url 'account:register' %}">Sign Up</a>
     </div>
 
-    <div>
-      {{ form.password.label_tag }}
-      {{ form.password }}
-      {{ form.password.errors }}
-    </div>
+    <h2>Login</h2>
 
-    <button type="submit">Log In</button>
-  </form>
-  <a href="{% provider_login_url 'google' method='oauth2' %}">
-  <button type="button">Log in with Google</button>
-</a>
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
+        {% for field in form %}
+            <p>
+                {{ field.label_tag }}<br>
+                {{ field }}
+                {% if field.errors %}
+                    <ul>
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </p>
+        {% endfor %}
+
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="{% provider_login_url 'google' method='oauth2' %}" class="google-btn">Login with Google</a>
+</div>
 {% endblock %}
