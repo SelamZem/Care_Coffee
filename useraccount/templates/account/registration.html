@@ -8,29 +8,34 @@
 
     <h2>Sign Up</h2>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-            <ul>
+            <div class="error-message">
                 {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
+                    <p>{{ error }}</p>
                 {% endfor %}
-            </ul>
+            </div>
         {% endif %}
 
-        {% for field in form %}
-            <p>
-                {{ field.label_tag }}<br>
+        {% for field in user_form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% if field.errors %}
-                    <ul>
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
+                    <div class="error-message">{{ field.errors }}</div>
                 {% endif %}
-            </p>
+            </div>
+        {% endfor %}
+                {% for field in profile_form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error-message">{{ field.errors }}</div>
+                {% endif %}
+            </div>
         {% endfor %}
 
         <button type="submit">Sign Up</button>

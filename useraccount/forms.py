@@ -33,12 +33,12 @@ class LoginForm(forms.Form):
     
 
 class RegistrationForm(forms.ModelForm):
-    password = forms.CharField(label="password",widget=forms.PasswordInput)
-    confirm_password = forms.CharField(label="confirm password",widget=forms.PasswordInput)
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name','password']
+        fields = ['username', 'email', 'first_name', 'last_name', 'password']
 
     # check password similarity with clean data(it is dictionary)
     def clean_confirm_password(self):
@@ -77,16 +77,6 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Username already exists!")
 
         return usernam
-
-    # saves automaticaly since commit=True
-    def save(self, commit=True):
-        cd = self.cleaned_data
-        user = super().save(commit=False)
-        user.set_password(cd.get("password"))
-        if commit:
-            user.save()
-        return user
-
 
 class ProfileEditForm(forms.ModelForm):
     class Meta:

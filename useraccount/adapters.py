@@ -3,7 +3,6 @@ from allauth.account.utils import user_username
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def is_open_for_signup(self, request, sociallogin):
-        logger.warning("==== save_user in MySocialAccountAdapter CALLED ====")
         return True
 
     def save_user(self, request, sociallogin, form=None):

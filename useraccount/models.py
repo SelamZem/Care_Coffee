@@ -1,3 +1,4 @@
+from email.policy import default
 from django.conf import settings
 from django.db import models
 
@@ -9,7 +10,8 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=20, blank=True)
     photo = models.ImageField(
         upload_to='users/%Y/%m/%d/',
-        blank=True
+        blank=True,
+        default = 'default/default.jpg'
     )
 
     def __str__(self):

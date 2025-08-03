@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, ProfileEditForm
 from django.contrib.auth import login
 
 
@@ -26,18 +26,31 @@ def login_view(request):
 
 def register_view(request):
     if request.method=="POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        user_form = RegistrationForm(request.POST)
+        profile_form= ProfileEditForm(request.POST, request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user=user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
+
+            profile= profile_form.save(commit=False)
+            profile.user=user
+            profile.save()
+
             return redirect('/account/login')
         else:
-            return render(request, 'account/registration.html', {'form': form})
+            return render(
+                request, 
+                'account/registration.html', 
+                {'user_form': user_form, 'profile_form':profile_form})
         
     # Get request?
     else:
-        form = RegistrationForm()
+        user_form = RegistrationForm()
+        profile_form = ProfileEditForm()
+
     return render(
         request,
         'account/registration.html', 
-        {'form': form}
+        {'user_form': user_form, 'profile_form':profile_form}
     )
