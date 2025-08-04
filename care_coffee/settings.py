@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,18 +66,18 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'care_coffee.urls'
 
-LOGGING = {
-    'version': 1,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'WARNING',
-    },
-}
+# # LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'WARNING',
+#     },
+# }
 
 TEMPLATES = [
     {
@@ -157,18 +158,25 @@ AUTHENTICATION_BACKENDS = [
 
 
 
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = config("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_SECRET = config("SOCIAL_AUTH_GOOGLE_SECRET")
+# google
+
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
+ACCOUNT_LOGIN_METHOD = ['email']
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/account/login/'
+
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+SOCIALACCOUNT_ADAPTER = 'useraccount.adapters.MySocialAccountAdapter'
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
         'APP': {
             'client_id': config("SOCIAL_AUTH_GOOGLE_CLIENT_ID"),
             'secret': config("SOCIAL_AUTH_GOOGLE_SECRET"),
@@ -177,27 +185,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# Auto signup settings
-SOCIALACCOUNT_AUTO_SIGNUP = True
-ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
-ACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_QUERY_EMAIL = True
-
-
-SOCIALACCOUNT_ADAPTER = 'useraccount.adapters.MySocialAccountAdapter'
-ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
-
-
-LOGIN_REDIRECT_URL = '/'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static", 
-]
-
-LOGIN_URL = '/account/login/'
+STATICFILES_DIRS = [BASE_DIR / 'static']

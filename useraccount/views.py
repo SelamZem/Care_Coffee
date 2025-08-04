@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm, RegistrationForm, ProfileEditForm
 from django.contrib.auth import login
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -54,3 +54,24 @@ def register_view(request):
         'account/registration.html', 
         {'user_form': user_form, 'profile_form':profile_form}
     )
+
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+
+    if request.method=="POST":
+        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_detail')
+        
+    else:
+        form= ProfileEditForm(instance=profile)
+
+    return render(request,
+                  'account/edit_profile.html',
+                  {'form':form})
+
+@login_required
+def profile_detail(request):
+    return render(request, 'useraccount/profile_detail.html', {'profile': request.user.profile})

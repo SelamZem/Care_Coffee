@@ -38,7 +38,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password']
+        fields = ['username', 'email', 'password']
 
     # check password similarity with clean data(it is dictionary)
     def clean_confirm_password(self):
@@ -81,4 +81,7 @@ class RegistrationForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields=["photo","phone_number"]
+        fields=['first_name', 'last_name',"phone_number", "photo"]
+        widgets = {
+            'photo': forms.FileInput(), 
+        }
