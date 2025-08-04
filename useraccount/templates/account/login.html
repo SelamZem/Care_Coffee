@@ -33,6 +33,10 @@
         {% endfor %}
 
         <button type="submit">Login</button>
+        <p class="forgot-password-link">
+            <a href="{%url 'account:request-password-reset' %}">Forgot your password?</a>
+        </p>
+
     </form>
 </div>
 {% endblock %}
