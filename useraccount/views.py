@@ -127,7 +127,7 @@ def update_password(request):
 
         if not user.check_password(old_password):
             messages.error(request,"please input the correct password")
-        if new_password!=confirm_password:
+        elif new_password!=confirm_password:
             messages.error(request,"The password doesnt match")
         else:
             user.set_password(new_password)
