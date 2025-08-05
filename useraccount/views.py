@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LoginForm, RegistrationForm, ProfileEditForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -27,6 +27,9 @@ def login_view(request):
         {'form': form}
     )
 
+def logout_view(request):
+    logout(request)
+    return redirect('account:login')
 
 def register_view(request):
     if request.method=="POST":
