@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'useraccount.apps.UseraccountConfig',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+
+    'useraccount.apps.UseraccountConfig',
+    'shop.apps.ShopConfig',
 
     # Allauth apps
     'django.contrib.sites',
