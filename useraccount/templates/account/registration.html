@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% load socialaccount %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'useraccount/css/user.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="form-card">
     <div class="top-right-link">

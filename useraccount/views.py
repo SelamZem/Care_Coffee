@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LoginForm, RegistrationForm, ProfileEditForm
 from django.contrib.auth import login, logout
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -9,16 +10,13 @@ from django.contrib import messages
 
 # Create your views here.
 
-def home_view(request):
-    return render(request, 'account/home.html')
-
 
 def login_view(request):
     if request.method=="POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            return redirect('/account/home')
+            return redirect(reverse('shop:product-list'))
     else:
         form = LoginForm()
     return render(

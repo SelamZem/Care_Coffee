@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<link rel="stylesheet" href="{% static 'css/shop.css' %}">
 
-<h1 style="color:red;">THIS TEMPLATE IS LOADED</h1>
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'shop/css/shop.css' %}">
+{% endblock %}
+
+{% block content %}
 
 <div class="container">
     <div class="sidebar">
         <form method="get">
+
             <h4>Filter by Category</h4>
             {% for category in categories %}
                 <label>
@@ -31,6 +34,7 @@
             {% endif %}
             <div class="product-name">{{ product.name }}</div>
             <div class="product-price">${{ product.price }}</div>
+              <a href="{% url 'shop:product_detail' product.id product.slug %}" class="detail-arrow"> →</a>  
         </div>
         {% empty %}
         <p>No products available.</p>

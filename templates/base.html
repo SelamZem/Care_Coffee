@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=2">
+
+
+    {% block extra_css %}{% endblock %}
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+    <title>{% block title %}My Shop{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+
+      <div class="nav-left">
+        <a href="{% url 'shop:product-list' %}" class="logo-link">
+          <img src="{% static 'images/logo.jpg' %}" alt="Site Logo" class="logo-img" />
+          <span class="logo-text">Care Coffee</span>
+        </a>
+      </div>
+            <div class="nav-right">
+        {% if user.is_authenticated %}
+          <a href="{% url 'account:logout' %}" class="btn-auth">Logout</a>
+        {% else %}
+          <a href="{% url 'account:login' %}" class="btn-auth">Login</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>

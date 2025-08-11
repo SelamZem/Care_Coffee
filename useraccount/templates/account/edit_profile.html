@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'useraccount/css/user.css' %}">
+{% endblock %}
 {% block content %}
 <div class="form-card">
     <h2>Edit Your Profile</h2>
