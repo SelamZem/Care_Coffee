@@ -25,3 +25,17 @@ def cart_detail(request):
     return render(request,
                   'cart/cart_detail.html',
                   {'cart':cart})
+
+
+@require_POST
+def cart_update_quantities(request):
+    cart = Cart(request)
+    for key, value in request.POST.items():
+        if key.startswith('quantity_'):
+            product_id = key.split('_')[1]            
+            quantity = int(value)
+            if 1 <= quantity <= 20:
+                product = get_object_or_404(Product, id=product_id)
+                cart.add(product=product, quantity=quantity, override_quantity=True)
+
+    return redirect('cart:cart_detail')
