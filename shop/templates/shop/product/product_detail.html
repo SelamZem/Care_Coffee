@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'shop/css/detail.css' %}">
-{% endblock%}
+  <link rel="stylesheet" href="{% static 'shop/css/detail.css' %}?v=2">
+{% endblock %}
 {% block content %}
 
 <div class="form-card">
@@ -20,13 +20,22 @@
     <p class="price">${{ product.price }}</p>
     <p class="description">{{ product.description }}</p>
 
-    <form action="{% url 'cart:cart_add' product.id %}" method="post">
+    <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form">
       {% csrf_token %}
+      <div class="quantity-field">
+        <label for="quantity">Quantity:</label>
+        <input 
+          type="number" 
+          id="quantity" 
+          name="quantity" 
+          value="1" 
+          min="1" 
+          max="10"
+          class="quantity-input"
+        >
+      </div>
       <button type="submit" class="add-to-cart-btn">Add to Cart</button>
-    </form> 
+    </form>
   </div>
 </div>
 {% endblock %}
-
-
-

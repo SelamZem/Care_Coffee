@@ -1,59 +1,62 @@
-{% extends "base.html"%}
-{% load static%}
-
+{% extends "base.html" %}
+{% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'cart/css/cart.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'cart/css/cart.css' %}?v=3">
 {% endblock %}
 
 {% block content %}
 <h1>Your Cart</h1>
 
 {% if cart|length > 0 %}
-<form method="post" action="{% url 'cart:cart_update_quantities' %}">
-  {% csrf_token %}
-  <table class="cart-table">
+<table class="cart-table">
     <thead>
-      <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price (each)</th>
-        <th>Total Price</th>
-        <th>Action</th>
-      </tr>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price (each)</th>
+            <th>Total Price</th>
+            <th>Action</th>
+        </tr>
     </thead>
     <tbody>
-      {% for item in cart %}
-      <tr>
-        <td>{{ item.product.name }}</td>
-        <td>
-          <input type="number" name="quantity_{{ item.product.id }}" value="{{ item.quantity }}" min="1" max="20" />
-        </td>
-        <td>${{ item.price }}</td>
-        <td>${{ item.total_price }}</td>
-        <td><a href="{% url 'cart:cart_remove' item.product.id %}">Remove</a></td>
-      </tr>
-      {% endfor %}
+        {% for item in cart %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>
+                <form method="post" action="{% url 'cart:cart_add' item.product.id %}">
+                    {% csrf_token %}
+                    {{ item.update_quantity_form.quantity }}
+                    {{ item.update_quantity_form.override }}
+                    <button type="submit" class="btn-update">Update</button>
+                </form>
+            </td>
+            <td>${{ item.price }}</td>
+            <td>${{ item.total_price }}</td>
+            <td>
+                <form method="post" action="{% url 'cart:cart_remove' item.product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-remove">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
     </tbody>
     <tfoot>
-      <tr>
-        <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
-        <td colspan="2"><strong>${{ cart.get_total_price }}</strong></td>
-      </tr>
+        <tr>
+            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+            <td colspan="2"><strong>${{ cart.get_total_price }}</strong></td>
+        </tr>
     </tfoot>
-  </table>
-
-  <button type="submit" class="btn-update">Update Quantities</button>
-</form>
+</table>
 
 <div class="cart-buttons">
-  <a href="{% url 'shop:product-list' %}" class="btn-add-items">Add Items</a>
-  <button class="btn-order" disabled>Place Order</button>
+    <a href="{% url 'shop:product-list' %}" class="btn-add-items">Add Items</a>
+    <button class="btn-order" disabled>Place Order</button>
 </div>
 
 {% else %}
 <p>Your cart is empty.</p>
 <a href="{% url 'shop:product-list' %}">Go back to shop</a>
 {% endif %}
-
-{% endblock%}
+{% endblock %}
