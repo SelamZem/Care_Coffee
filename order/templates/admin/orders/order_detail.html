@@ -1,0 +1,35 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+
+
+{% block content %}
+<h1>Order #{{ order.id }}</h1>
+<p><strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+<p><strong>Email:</strong> {{ order.email }}</p>
+<p><strong>Created:</strong> {{ order.created }}</p>
+<p><strong>Paid:</strong> {{ order.paid }}</p>
+
+<h2>Items</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.items.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.price }}</td>
+            <td>${{ item.get_cost }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'orders:admin_order_pdf' order.id %}" class="button">Download PDF</a>
+{% endblock %}

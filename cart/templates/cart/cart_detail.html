@@ -14,7 +14,7 @@
         <tr>
             <th>Product</th>
             <th>Quantity</th>
-            <th>Price (each)</th>
+            <th>Price</th>
             <th>Total Price</th>
             <th>Action</th>
         </tr>
@@ -52,7 +52,11 @@
 
 <div class="cart-buttons">
     <a href="{% url 'shop:product-list' %}" class="btn-add-items">Add Items</a>
-    <button class="btn-order" disabled>Place Order</button>
+    {% if cart|length > 0 %}
+        <a href="{% url 'order:order_create' %}" class="btn-order">Place Order</a>
+    {% else %}
+        <button class="btn-order" disabled>Place Order</button>
+    {% endif %}
 </div>
 
 {% else %}

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'useraccount.apps.UseraccountConfig',
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
+    'order.apps.OrderConfig',
 
     # Allauth apps
     'django.contrib.sites',
@@ -210,3 +211,10 @@ DEFAULT_FROM_EMAIL = 'carecoffee@gmail.com'
 # session
 
 CART_SESSION_ID = 'cart'
+
+
+# chapa
+CHAPA_SECRET_KEY = config("CHAPA_SECRET_KEY")
+CHAPA_PUBLIC_KEY = config("CHAPA_PUBLIC_KEY")
+CHAPA_CALLBACK_URL = config("CHAPA_CALLBACK_URL")
+CHAPA_RETURN_URL = config("CHAPA_RETURN_URL")

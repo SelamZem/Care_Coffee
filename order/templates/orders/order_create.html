@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'order/css/order_create.css' %}?v=2">
+{% endblock %}
+
+{% block content %}
+<div class="order-card-container">
+    <div class="order-card">
+        <h1>Complete Your Order</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+            </div>
+            <div class="form-group">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+
+            <h2>Cart Items</h2>
+            {% if cart_items %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                        <td>${{ cart_total }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            {% else %}
+            <p>Your cart is empty.</p>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Place Order</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
