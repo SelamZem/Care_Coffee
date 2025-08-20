@@ -8,16 +8,14 @@
 {% block content %}
 <div class="order-card-container">
     <div class="order-card">
-        <h1>Thank You for Your Order!</h1>
-        <p>Hi {{ order.first_name }}, your order has been placed successfully.</p>
+        <h1>Payment Failed</h1>
+        <p>Hi {{ order.first_name }}, unfortunately your payment could not be processed.</p>
         <p><strong>Order ID:</strong> {{ order.id }}</p>
         <p><strong>Email:</strong> {{ order.email }}</p>
         <p><strong>Order Date:</strong> {{ order.created }}</p>
-
-        <a href="{% url 'shop:product-list' %}" class="btn-submit">Continue Shopping</a>
-        {% if chapa_receipt %}
-        <a href="{{ chapa_receipt }}" target="_blank" class="btn-submit">View Chapa Receipt</a>
-        {% endif %}
+        <p>Please try again or use a different payment method.</p>
+        <a href="{% url 'orders:payment' order.id %}" class="btn-submit">Retry Payment</a>
+        <a href="{% url 'shop:product-list' %}" class="btn-submit">Back to Shop</a>
     </div>
 </div>
 {% endblock %}

@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/order/<int:order_id>/pdf/', views.admin_order_pdf, name='admin_order_pdf'),
 
     path('pay/<int:order_id>/', views.order_pay, name='order_pay'),
-    path('callback/', views.chapa_callback, name='chapa_callback'),
+    path('chapa/callback/', views.chapa_callback, name='chapa_callback'),
+    path('failed/', views.payment_failed, name='payment_failed'), 
 
 ]
