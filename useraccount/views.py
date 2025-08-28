@@ -12,11 +12,12 @@ from django.contrib import messages
 
 
 def login_view(request):
+    next_page = request.GET.get('next') or reverse('shop:product-list')
     if request.method=="POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            return redirect(reverse('shop:product-list'))
+            return redirect(next_page)
     else:
         form = LoginForm()
     return render(

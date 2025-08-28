@@ -85,8 +85,8 @@ def order_pay(request, order_id):
         "email": order.email,
         "first_name": order.first_name,
         "last_name": order.last_name,
-        "tx_ref": order.chapa_tx_ref,
-        "callback_url": request.build_absolute_uri(reverse("order:chapa_callback")),
+        "trx_ref": order.chapa_tx_ref,
+        "callback_url": request.build_absolute_uri(reverse('order:chapa_callback')),
         "currency": "ETB"
     }
 
@@ -100,27 +100,32 @@ def order_pay(request, order_id):
 
     if res.get('status') == 'success':
         return redirect(res['data']['checkout_url'])
-    return redirect('order:payment_failed')
+        
+    return redirect('order:payment_failed', order_id=order.id)
 
 
 def chapa_callback(request):
-    tx_ref = request.GET.get('tx_ref')
-    if not tx_ref:
+    trx_ref = request.GET.get('trx_ref')  
+    if not trx_ref:
         return HttpResponse("Transaction reference missing", status=400)
 
-    order = get_object_or_404(Order, chapa_tx_ref=tx_ref)
+    order = get_object_or_404(Order, chapa_tx_ref=trx_ref)
     headers = {"Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}"}
     response = requests.get(
-        f"https://api.chapa.co/v1/transaction/verify/{tx_ref}/",
+        f"https://api.chapa.co/v1/transaction/verify/{trx_ref}",
         headers=headers
     )
     res = response.json()
+
+    print(" Verify response:", res)
 
     if res.get('status') == 'success' and res['data']['status'] == 'success':
         order.paid = True
         order.save()
         return redirect('order:order_success', order_id=order.id)
-    return redirect('order:payment_failed')
+
+    return redirect('order:payment_failed', order_id=order.id)
+
 
 
 @login_required(login_url='account:login')
@@ -133,6 +138,9 @@ def order_success(request, order_id):
     })
 
 
+
 @login_required(login_url='account:login')
-def payment_failed(request):
-    return render(request, 'orders/order_payment_failed.html')
+def payment_failed(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'orders/order_payment_failed.html', {'order': order})
+

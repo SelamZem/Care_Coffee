@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('pay/<int:order_id>/', views.order_pay, name='order_pay'),
     path('chapa/callback/', views.chapa_callback, name='chapa_callback'),
-    path('failed/', views.payment_failed, name='payment_failed'), 
+    path('failed/<int:order_id>/', views.payment_failed, name='payment_failed'),
+
 
 ]

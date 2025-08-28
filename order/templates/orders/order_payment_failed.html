@@ -14,7 +14,7 @@
         <p><strong>Email:</strong> {{ order.email }}</p>
         <p><strong>Order Date:</strong> {{ order.created }}</p>
         <p>Please try again or use a different payment method.</p>
-        <a href="{% url 'orders:payment' order.id %}" class="btn-submit">Retry Payment</a>
+        <a href="{% url 'order:order_pay' order.id %}" class="btn-submit">Retry Payment</a>
         <a href="{% url 'shop:product-list' %}" class="btn-submit">Back to Shop</a>
     </div>
 </div>

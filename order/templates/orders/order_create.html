@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'order/css/order_create.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'order/css/order_create.css' %}?v=4">
 {% endblock %}
 
 {% block content %}
@@ -31,7 +31,7 @@
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Qty</th>
+                        <th>Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
                     </tr>
@@ -56,8 +56,11 @@
             {% else %}
             <p>Your cart is empty.</p>
             {% endif %}
+            <div class="button-container">
+                    <button type="button" class="btn-submit" onclick="window.location.href='{% url 'shop:product-list' %}'">Back To Shop</button>
+                <button type="submit" class="btn-submit">Place Order</button>
+            </div>
 
-            <button type="submit" class="btn-submit">Place Order</button>
         </form>
     </div>
 </div>
