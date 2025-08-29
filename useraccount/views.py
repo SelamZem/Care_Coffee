@@ -63,6 +63,16 @@ def register_view(request):
     )
 
 @login_required
+def show_profile(request):
+    profile = request.user.profile 
+    return render(
+        request,
+        'account/profile.html',
+        {'profile': profile}
+    )
+
+
+@login_required
 def edit_profile(request):
     profile = request.user.profile
 
@@ -70,7 +80,7 @@ def edit_profile(request):
         form = ProfileEditForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('profile_detail')
+            return redirect('account:show_profile')
         
     else:
         form= ProfileEditForm(instance=profile)
@@ -78,13 +88,6 @@ def edit_profile(request):
     return render(request,
                   'account/edit_profile.html',
                   {'form':form})
-
-
-# this is not implemented yet...created just to test
-
-@login_required
-def profile_detail(request):
-    return render(request, 'useraccount/profile_detail.html', {'profile': request.user.profile})
 
 
 def request_password_reset(request):

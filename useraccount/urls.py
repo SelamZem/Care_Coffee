@@ -9,12 +9,15 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
 
     path('edit_profile/', views.edit_profile, name="edit_profile"),
-    path('profile/', views.profile_detail, name='profile_detail'),
+    
 
 
 
     path('request-password-reset/', views.request_password_reset, name='request-password-reset'),
     path('reset-password/<int:user_id>/', views.reset_password, name='reset-password'),
     path('update-password/', views.update_password, name="update-password"),
+
+
+    path('profile/show/', views.show_profile, name='show_profile'),
 
 ]

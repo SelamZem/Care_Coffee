@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'useraccount/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-card">
+    <div class="profile-photo-container">
+        <img src="{{ user.profile.photo.url }}" alt="Profile Photo" class="profile-photo" />
+    </div>
+
+    <h2>{{ profile.first_name }} {{ profile.last_name }}</h2>
+    <p>Email: {{ profile.user.email }}</p>
+    {% if profile.bio %}
+        <p>Bio: {{ profile.bio }}</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -45,7 +45,12 @@ def order_create(request):
             request.session['order_id'] = order.id
             return redirect('order:order_pay', order_id=order.id)
     else:
-        form = OrderCreateForm()
+        initial_data = {
+            'first_name': request.user.profile.first_name,
+            'last_name': request.user.profile.last_name,
+            'email': request.user.email,
+        }
+        form = OrderCreateForm(initial=initial_data)
 
     return render(request, 'orders/order_create.html', {
         'cart_items': cart_items,

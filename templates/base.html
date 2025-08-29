@@ -17,16 +17,29 @@
 
       <div class="nav-left">
         <a href="{% url 'shop:product-list' %}" class="logo-link">
-          <img src="{% static 'images/logo.jpg' %}" alt="Site Logo" class="logo-img" />
+          <img src="/media/logos/logo.jpg"  alt="Site Logo" class="logo-img" />
           <span class="logo-text">Care Coffee</span>
         </a>
       </div>
             <div class="nav-right">
-        {% if user.is_authenticated %}
-          <a href="{% url 'account:logout' %}" class="btn-auth">Logout</a>
-        {% else %}
-          <a href="{% url 'account:login' %}" class="btn-auth">Login</a>
-        {% endif %}
+              {% if user.is_authenticated %}
+                <div class="account-dropdown">
+                    {% if user.profile.photo %}
+                      <img src="{{ user.profile.photo.url }}" alt="Profile Photo" class="account-icon" />
+                    {% else %}
+                      <img src="/media/users/default/default.jpg" alt="Default Photo" class="account-icon" />
+                    {% endif %}
+
+                  <div class="dropdown-menu">
+                    <a href="{% url 'account:show_profile' %}">My Profile</a>
+                    <a href="{% url 'account:edit_profile' %}">Edit profile</a>
+                    <a href="{% url 'account:logout' %}">Logout</a>
+                  </div>
+                </div>
+              {% else %}
+                <a href="{% url 'account:login' %}" class="btn-auth">Login</a>
+              {% endif %}
+
       </div>
     </nav>
   </header>

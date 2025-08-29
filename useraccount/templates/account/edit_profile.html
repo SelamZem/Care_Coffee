@@ -2,45 +2,49 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'useraccount/css/user.css' %}">
+<link rel="stylesheet" href="{% static 'useraccount/css/edit_profile.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="form-card">
     <h2>Edit Your Profile</h2>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" class="profile-form">
         {% csrf_token %}
 
+        <!-- Profile Photo Preview -->
         <div class="profile-photo-preview">
             {% if form.instance.photo %}
-                <img src="{{ form.instance.photo.url }}" alt="Profile Photo" />
+                <img src="{{ form.instance.photo.url }}" alt="Profile Photo" class="profile-photo" />
             {% else %}
-                <img src="{% static 'default/default.jpg' %}" alt="Default Profile Photo" />
+                <img src="{% static 'users/default/default.jpg' %}" alt="Default Profile Photo" class="profile-photo" />
             {% endif %}
         </div>
 
-        <p>
-            <label for="{{ form.first_name.id_for_label }}">First name</label><br />
+        <!-- Form Fields -->
+        <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}">First Name</label>
             {{ form.first_name }}
-        </p>
-        <p>
-            <label for="{{ form.last_name.id_for_label }}">Last name</label><br />
-            {{ form.last_name }}
-        </p>
-        <p>
-            <label for="{{ form.phone_number.id_for_label }}">Phone number</label><br />
-            {{ form.phone_number }}
-        </p>
+        </div>
 
-        <p>
+        <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+            {{ form.last_name }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+            {{ form.phone_number }}
+        </div>
+
+        <div class="form-group">
             <label class="custom-file-upload" for="{{ form.photo.id_for_label }}">
                 Change Profile Photo
-            </label><br />
-            {{ form.photo.as_widget }}
-        </p>
+            </label>
+            {{ form.photo }}
+        </div>
 
-
-        <button type="submit">Save Changes</button>
+        <button type="submit" class="btn-submit">Save Changes</button>
     </form>
 </div>
 {% endblock %}
