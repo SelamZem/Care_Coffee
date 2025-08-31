@@ -237,9 +237,9 @@ CHAPA_PUBLIC_KEY = config("CHAPA_PUBLIC_KEY")
 DJANGO_DEVELOPMENT = config("DJANGO_DEVELOPMENT", cast=bool, default=True)
 
 if DJANGO_DEVELOPMENT:
-    BASE_URL = "http://127.0.0.1:8000"  # local dev
+    BASE_URL = "http://127.0.0.1:8000"
 else:
-    BASE_URL = config("PROD_URL")       # production on Render
+    BASE_URL = config("PROD_URL", default="https://care-coffee.onrender.com")
 
 CHAPA_CALLBACK_URL = f"{BASE_URL}/order/chapa/webhook/"
 CHAPA_RETURN_URL = f"{BASE_URL}/order/success/{{order_id}}/"
