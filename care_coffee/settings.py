@@ -30,8 +30,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# Add ngrok URL to trusted origins
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'https://*.ngrok.io']
 
 # Site ID for django-allauth
 SITE_ID = 1
@@ -235,5 +233,30 @@ CART_SESSION_ID = 'cart'
 # chapa
 CHAPA_SECRET_KEY = config("CHAPA_SECRET_KEY")
 CHAPA_PUBLIC_KEY = config("CHAPA_PUBLIC_KEY")
-CHAPA_CALLBACK_URL = config("CHAPA_CALLBACK_URL")
-CHAPA_RETURN_URL = config("CHAPA_RETURN_URL")
+
+
+
+
+
+# cloudflared
+if os.environ.get("DJANGO_DEVELOPMENT") == "True":
+    public_url = os.environ.get("CLOUDFLARED_URL")  
+    if public_url:
+        print(" * cloudflared tunnel:", public_url)
+        CHAPA_CALLBACK_URL = f"{public_url}/chapa/webhook/"
+        CHAPA_RETURN_URL = f"{public_url}/payment/success/"
+        CSRF_TRUSTED_ORIGINS = [public_url]
+    else:
+        # fallback if the env variable is not set
+        CHAPA_CALLBACK_URL = "http://127.0.0.1:8000/order/chapa/webhook/"
+        CHAPA_RETURN_URL = "http://127.0.0.1:8000/order/success/"
+
+        CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
+else:
+    CHAPA_CALLBACK_URL = os.environ.get("CHAPA_CALLBACK_URL")
+    CHAPA_RETURN_URL = os.environ.get("CHAPA_RETURN_URL")
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://armed-competitive-nationally-brought.trycloudflare.com",
+]

@@ -4,12 +4,10 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'order/css/order_create.css' %}?v=4">
 {% endblock %}
-
 {% block content %}
 <div class="order-card-container">
     <div class="order-card">
         <h1>Complete Your Order</h1>
-
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -60,7 +58,6 @@
                     <button type="button" class="btn-submit" onclick="window.location.href='{% url 'shop:product-list' %}'">Back To Shop</button>
                 <button type="submit" class="btn-submit">Place Order</button>
             </div>
-
         </form>
     </div>
 </div>

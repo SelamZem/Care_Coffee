@@ -38,10 +38,9 @@
         </div>
 
         <div class="form-group">
-            <label class="custom-file-upload" for="{{ form.photo.id_for_label }}">
-                Change Profile Photo
-            </label>
-            {{ form.photo }}
+            {{ form.photo.label_tag }}  
+            {{ form.photo }}            
+
         </div>
 
         <button type="submit" class="btn-submit">Save Changes</button>
