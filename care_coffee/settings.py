@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DJANGO_DEVELOPMENT", "False") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = ["care-coffee.onrender.com", "127.0.0.1", "localhost"]
+
 
 # Site ID for django-allauth
 SITE_ID = 1
@@ -231,27 +232,14 @@ CHAPA_PUBLIC_KEY = config("CHAPA_PUBLIC_KEY")
 
 
 
+# callback urls
 
+DJANGO_DEVELOPMENT = config("DJANGO_DEVELOPMENT", cast=bool, default=True)
 
-# cloudflared
-if os.environ.get("DJANGO_DEVELOPMENT") == "True":
-    public_url = os.environ.get("CLOUDFLARED_URL")  
-    if public_url:
-        print(" * cloudflared tunnel:", public_url)
-        CHAPA_CALLBACK_URL = f"{public_url}/chapa/webhook/"
-        CHAPA_RETURN_URL = f"{public_url}/payment/success/"
-        CSRF_TRUSTED_ORIGINS = [public_url]
-    else:
-        # fallback if the env variable is not set
-        CHAPA_CALLBACK_URL = "http://127.0.0.1:8000/order/chapa/webhook/"
-        CHAPA_RETURN_URL = "http://127.0.0.1:8000/order/success/"
-
-        CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
+if DJANGO_DEVELOPMENT:
+    BASE_URL = "http://127.0.0.1:8000"  # local dev
 else:
-    CHAPA_CALLBACK_URL = os.environ.get("CHAPA_CALLBACK_URL")
-    CHAPA_RETURN_URL = os.environ.get("CHAPA_RETURN_URL")
+    BASE_URL = config("PROD_URL")       # production on Render
 
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://armed-competitive-nationally-brought.trycloudflare.com",
-]
+CHAPA_CALLBACK_URL = f"{BASE_URL}/order/chapa/webhook/"
+CHAPA_RETURN_URL = f"{BASE_URL}/order/success/{{order_id}}/"

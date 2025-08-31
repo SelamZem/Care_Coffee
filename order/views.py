@@ -96,8 +96,8 @@ def order_pay(request, order_id):
         order.chapa_tx_ref = f"tx-{order.id}-{uuid.uuid4().hex[:10]}"
         order.save(update_fields=['chapa_tx_ref'])
 
-    callback_url = request.build_absolute_uri(reverse('order:chapa_callback'))
-    return_url = request.build_absolute_uri(reverse('order:order_success', args=[order.id]))
+    callback_url = settings.CHAPA_CALLBACK_URL
+    return_url = settings.CHAPA_RETURN_URL.format(order_id=order_id)
 
     data = {
         "amount": str(float(order.get_total_cost())),
