@@ -22,14 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d%-%x@7hh(y@=@^7oyr^2whp9dqeylym#+5un9ru(f)wl==6r!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DJANGO_DEVELOPMENT", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Site ID for django-allauth
 SITE_ID = 1
