@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DJANGO_DEVELOPMENT", "False") == "True"
+SECRET_KEY =  config("SECRET_KEY")
+DEBUG = config("DJANGO_DEVELOPMENT", cast=bool, default=True)
 ALLOWED_HOSTS = ["care-coffee.onrender.com", "127.0.0.1", "localhost"]
 
 
