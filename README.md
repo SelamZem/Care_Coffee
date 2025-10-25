@@ -8,7 +8,6 @@ Care Coffee is a Django-based e-commerce web application that allows users to br
 - Online payment integration using Chapa API
 - User registration and login (via built-in authentication)
 - User profile management (including profile photo upload)
-- Docker support for containerized deployment
 - Admin dashboard for managing products, orders, and users
 
 ## Project Structure
