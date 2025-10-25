@@ -27,30 +27,30 @@ care_coffee/
 - README.md
 
 ## Setup Instructions
-# 1. Clone the repository
+### 1. Clone the repository
 git clone https://github.com/SelamZem/Care_Coffee.git
 cd care_coffee
 
-# 2. Create and activate a virtual environment
+### 2. Create and activate a virtual environment
 
-# Windows
+### Windows
 python -m venv venv
 venv\Scripts\activate
 
-# macOS/Linux
+### macOS/Linux
 python -m venv venv
 source venv/bin/activate
 
-# 3. Install dependencies
+### 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Apply migrations
+### 4. Apply migrations
 python manage.py migrate
 
-# 5. Create admin user
+### 5. Create admin user
 python manage.py createsuperuser
 
-# 6. Run the development server
+### 6. Run the development server
 python manage.py runserver
 
 
