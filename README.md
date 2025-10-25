@@ -13,37 +13,46 @@ Care Coffee is a Django-based e-commerce web application that allows users to br
 
 ## Project Structure
 care_coffee/
-│
-├── care_coffee/ # Project settings and URLs
-├── cart/ # Cart app (add, update, remove items)
-├── order/ # Order creation, callback, and payment logic
-├── shop/ # Product listing and details
-├── templates/ # Global and app-specific HTML templates
-├── useraccount/ # User registration, login, and profile management
-│
-├── manage.py
-├── db.sqlite3
-├── requirements.txt
-├── Dockerfile
-├── .gitignore
-└── README.md
+- care_coffee/        # Project settings and URLs
+- cart/               # Cart app (add, update, remove items)
+- order/              # Order creation, callback, and payment logic
+- shop/               # Product listing and details
+- templates/          # Global and app-specific HTML templates
+- useraccount/        # User registration, login, and profile management
+- manage.py
+- db.sqlite3
+- requirements.txt
+- Dockerfile
+- .gitignore
+- README.md
 
-
-#1. Clone the repository:
+## Setup Instructions
+# 1. Clone the repository
 git clone https://github.com/SelamZem/Care_Coffee.git
 cd care_coffee
-#2. Create and activate a virtual environment
+
+# 2. Create and activate a virtual environment
+
+# Windows
 python -m venv venv
-venv\Scripts\activate      # Windows
-source venv/bin/activate   # macOS/Linux
-#3. Install dependencies
+venv\Scripts\activate
+
+# macOS/Linux
+python -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
-#4. Apply Migrations
+
+# 4. Apply migrations
 python manage.py migrate
-#5. Create Admin
+
+# 5. Create admin user
 python manage.py createsuperuser
-#6. Create the Development Server
+
+# 6. Run the development server
 python manage.py runserver
+
 
 
 
