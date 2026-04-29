@@ -55,20 +55,35 @@ class Product(models.Model):
     def get_image_base64(self):
         """Return image as base64 encoded string for embedding in HTML"""
         try:
-            if self.image:
-                # Try to read the actual uploaded file
-                image_path = Path(settings.MEDIA_ROOT) / self.image.name
-                if image_path.exists():
-                    with open(image_path, 'rb') as image_file:
+            if self.image and self.image.name:
+                # Try static files first (for deployed images)
+                static_path = Path(settings.BASE_DIR) / 'static' / self.image.name
+                if static_path.exists():
+                    with open(static_path, 'rb') as image_file:
                         encoded = base64.b64encode(image_file.read()).decode('utf-8')
-                        # Determine image type
-                        if image_path.suffix.lower() in ['.jpg', '.jpeg']:
+                        if static_path.suffix.lower() in ['.jpg', '.jpeg']:
                             return f'data:image/jpeg;base64,{encoded}'
-                        elif image_path.suffix.lower() == '.png':
+                        elif static_path.suffix.lower() == '.png':
                             return f'data:image/png;base64,{encoded}'
-                        elif image_path.suffix.lower() == '.gif':
+                        elif static_path.suffix.lower() == '.gif':
                             return f'data:image/gif;base64,{encoded}'
-                        elif image_path.suffix.lower() == '.webp':
+                        elif static_path.suffix.lower() == '.webp':
+                            return f'data:image/webp;base64,{encoded}'
+                        else:
+                            return f'data:image/jpeg;base64,{encoded}'
+                
+                # Try media files (for uploaded images)
+                media_path = Path(settings.MEDIA_ROOT) / self.image.name
+                if media_path.exists():
+                    with open(media_path, 'rb') as image_file:
+                        encoded = base64.b64encode(image_file.read()).decode('utf-8')
+                        if media_path.suffix.lower() in ['.jpg', '.jpeg']:
+                            return f'data:image/jpeg;base64,{encoded}'
+                        elif media_path.suffix.lower() == '.png':
+                            return f'data:image/png;base64,{encoded}'
+                        elif media_path.suffix.lower() == '.gif':
+                            return f'data:image/gif;base64,{encoded}'
+                        elif media_path.suffix.lower() == '.webp':
                             return f'data:image/webp;base64,{encoded}'
                         else:
                             return f'data:image/jpeg;base64,{encoded}'

@@ -25,17 +25,30 @@ class Profile(models.Model):
         """Return photo as base64 encoded string for embedding in HTML"""
         try:
             if self.photo and self.photo.name != 'users/default/default.jpg':
-                # Try to read the actual uploaded file
-                photo_path = Path(settings.MEDIA_ROOT) / self.photo.name
-                if photo_path.exists():
-                    with open(photo_path, 'rb') as image_file:
+                # Try static files first (for deployed images)
+                static_path = Path(settings.BASE_DIR) / 'static' / self.photo.name
+                if static_path.exists():
+                    with open(static_path, 'rb') as image_file:
                         encoded = base64.b64encode(image_file.read()).decode('utf-8')
-                        # Determine image type
-                        if photo_path.suffix.lower() in ['.jpg', '.jpeg']:
+                        if static_path.suffix.lower() in ['.jpg', '.jpeg']:
                             return f'data:image/jpeg;base64,{encoded}'
-                        elif photo_path.suffix.lower() == '.png':
+                        elif static_path.suffix.lower() == '.png':
                             return f'data:image/png;base64,{encoded}'
-                        elif photo_path.suffix.lower() == '.gif':
+                        elif static_path.suffix.lower() == '.gif':
+                            return f'data:image/gif;base64,{encoded}'
+                        else:
+                            return f'data:image/jpeg;base64,{encoded}'
+                
+                # Try media files (for uploaded images)
+                media_path = Path(settings.MEDIA_ROOT) / self.photo.name
+                if media_path.exists():
+                    with open(media_path, 'rb') as image_file:
+                        encoded = base64.b64encode(image_file.read()).decode('utf-8')
+                        if media_path.suffix.lower() in ['.jpg', '.jpeg']:
+                            return f'data:image/jpeg;base64,{encoded}'
+                        elif media_path.suffix.lower() == '.png':
+                            return f'data:image/png;base64,{encoded}'
+                        elif media_path.suffix.lower() == '.gif':
                             return f'data:image/gif;base64,{encoded}'
                         else:
                             return f'data:image/jpeg;base64,{encoded}'
