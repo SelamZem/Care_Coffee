@@ -12,7 +12,7 @@ from django.contrib import messages
 
 
 def login_view(request):
-    next_page = request.GET.get('next') or reverse('shop:product-list')
+    next_page = request.GET.get('next') or request.POST.get('next') or reverse('shop:product-list')
     if request.method=="POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -23,12 +23,13 @@ def login_view(request):
     return render(
         request,
         'account/login.html',
-        {'form': form}
+        {'form': form, 'next': request.GET.get('next')}
     )
 
 def logout_view(request):
+    next_page = request.GET.get('next') or request.META.get('HTTP_REFERER') or reverse('shop:product-list')
     logout(request)
-    return redirect('account:login')
+    return redirect(next_page)
 
 def register_view(request):
     if request.method=="POST":
