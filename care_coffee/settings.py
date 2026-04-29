@@ -95,19 +95,12 @@ MIDDLEWARE = [
 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'useraccount.middleware.MediaServeMiddleware',
 ]
 
 # WhiteNoise configuration for serving static and media files
 WHITENOISE_ROOT = BASE_DIR / 'staticfiles'
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
-
-# In production, serve media files through WhiteNoise
-if not DEBUG:
-    WHITENOISE_ROOT = BASE_DIR / 'staticfiles'
-    WHITENOISE_USE_FINDERS = True
-    WHITENOISE_AUTOREFRESH = False
 
 
 ROOT_URLCONF = 'care_coffee.urls'

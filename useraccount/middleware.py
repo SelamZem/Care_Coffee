@@ -13,7 +13,15 @@ class MediaServeMiddleware:
             try:
                 # Remove /media/ prefix to get the file path
                 file_path = request.path[7:]  # Remove '/media/'
-                full_path = settings.MEDIA_ROOT / file_path
+                
+                # Ensure MEDIA_ROOT is a Path object
+                media_root = Path(settings.MEDIA_ROOT)
+                full_path = media_root / file_path
+                
+                # Normalize the path to prevent directory traversal
+                full_path = full_path.resolve()
+                if not str(full_path).startswith(str(media_root.resolve())):
+                    raise Http404("Access denied")
                 
                 if full_path.exists() and full_path.is_file():
                     # Determine content type
@@ -27,8 +35,11 @@ class MediaServeMiddleware:
                         response['Content-Disposition'] = f'inline; filename="{full_path.name}"'
                         return response
                 else:
+                    # For debugging, let's see what paths we're checking
+                    print(f"Media file not found: {full_path} (exists: {full_path.exists()})")
                     raise Http404("Media file not found")
             except Exception as e:
+                print(f"Error serving media file: {e}")
                 raise Http404(f"Error serving media file: {e}")
         
         response = self.get_response(request)

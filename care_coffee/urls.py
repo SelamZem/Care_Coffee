@@ -19,6 +19,18 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
+from django.http import HttpResponse, Http404
+from pathlib import Path
+import mimetypes
+
+
+def serve_media(request, path):
+    file_path = Path(settings.MEDIA_ROOT) / path
+    if file_path.is_file():
+        mime_type, _ = mimetypes.guess_type(str(file_path))
+        return HttpResponse(file_path.open('rb').read(), content_type=mime_type)
+    else:
+        raise Http404
 
 
 urlpatterns = [
@@ -38,3 +50,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # In production, serve media files through a custom view
+    urlpatterns += [
+        path('media/<path:path>', serve_media, name='serve_media'),
+    ]

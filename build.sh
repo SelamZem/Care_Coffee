@@ -6,13 +6,17 @@ pip install -r requirements.txt
 
 # Create media directory if it doesn't exist
 mkdir -p media
+chmod 755 media
 
 # Collect static files with clear flag to avoid conflicts
 python manage.py collectstatic --noinput --clear
 
-# Copy media files to staticfiles/media so WhiteNoise can serve them at /media/
-if [ -d "media" ]; then
-    mkdir -p staticfiles/media
+# Ensure media directory exists in staticfiles for WhiteNoise
+mkdir -p staticfiles/media
+chmod 755 staticfiles/media
+
+# Copy any existing media files to staticfiles/media
+if [ -d "media" ] && [ "$(ls -A media 2>/dev/null)" ]; then
     cp -r media/* staticfiles/media/ 2>/dev/null || true
 fi
 
