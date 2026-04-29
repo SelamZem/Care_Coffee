@@ -10,9 +10,10 @@ mkdir -p media
 # Collect static files with clear flag to avoid conflicts
 python manage.py collectstatic --noinput --clear
 
-# Copy media files to staticfiles so WhiteNoise can serve them
+# Copy media files to staticfiles/media so WhiteNoise can serve them at /media/
 if [ -d "media" ]; then
-    cp -r media/* staticfiles/ 2>/dev/null || true
+    mkdir -p staticfiles/media
+    cp -r media/* staticfiles/media/ 2>/dev/null || true
 fi
 
 # Run database migrations
