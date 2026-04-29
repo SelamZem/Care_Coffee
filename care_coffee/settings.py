@@ -97,6 +97,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# WhiteNoise configuration for serving static and media files
+WHITENOISE_ROOT = BASE_DIR / 'staticfiles'
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = DEBUG
+
 
 ROOT_URLCONF = 'care_coffee.urls'
 
@@ -231,6 +236,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Serve media files through WhiteNoise in production
+if not DEBUG:
+    WHITENOISE_ROOT = BASE_DIR / 'staticfiles'
+    WHITENOISE_USE_FINDERS = True
 
 # settings.py
 

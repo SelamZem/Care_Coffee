@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: care-coffee
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn care_coffee.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEVELOPMENT
+        value: "False"
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: care-coffee-db
+          property: connectionString
+      - key: CHAPA_SECRET_KEY
+        sync: false
+      - key: CHAPA_PUBLIC_KEY
+        sync: false
+      - key: CHAPA_CALLBACK_URL
+        value: "https://care-coffee.onrender.com/order/chapa/webhook/"
+      - key: CHAPA_RETURN_URL
+        value: "https://care-coffee.onrender.com/order/success/{order_id}/"
+      - key: BASE_URL
+        value: "https://care-coffee.onrender.com"
+      - key: PYTHON_VERSION
+        value: "3.13.0"
+
+databases:
+  - name: care-coffee-db
+    plan: free
+    databaseName: carecoffee
+    user: carecoffee
