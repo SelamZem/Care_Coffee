@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +25,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY =  config("SECRET_KEY")
 DEBUG = config("DJANGO_DEVELOPMENT", cast=bool, default=True)
-ALLOWED_HOSTS = ["care-coffee.onrender.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["care-coffee.onrender.com", "127.0.0.1", "localhost", 
+                 "*.onrender.com", "localhost", "127.0.0.1"]
+
+# CSRF trusted origins for browser preview
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:60536",
+    "http://localhost:60536",
+    "http://127.0.0.1:60544",
+    "http://localhost:60544",
+]
 
 
 # Site ID for django-allauth
@@ -42,6 +52,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' in production
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Allauth password validation
+ACCOUNT_PASSWORD_VALIDATORS = 'django.contrib.auth.password_validation'
 
 
 # Application definition
@@ -138,6 +151,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 6,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -218,7 +234,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # settings.py
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 DEFAULT_FROM_EMAIL = 'carecoffee@gmail.com' 
 
 

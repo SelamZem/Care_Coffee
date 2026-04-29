@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/profile_fix.css' %}">
 
     {% block extra_css %}{% endblock %}
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
@@ -27,7 +27,7 @@
                     {% if user.profile.photo %}
                       <img src="{{ user.profile.photo.url }}" alt="Profile Photo" class="account-icon" />
                     {% else %}
-                      <img src="/media/users/default/default.jpg" alt="Default Photo" class="account-icon" />
+                      <img src="{% static 'img/placeholder.png' %}" alt="Default Photo" class="account-icon" />
                     {% endif %}
 
                   <div class="dropdown-menu">

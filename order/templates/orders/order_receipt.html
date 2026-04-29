@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'order/css/order_receipt.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="receipt-container">
+    <div class="receipt-header">
+        <div class="receipt-logo">
+            <img src="/media/logos/logo.jpg" alt="Care Coffee Logo" class="logo-img">
+            <h1>Care Coffee</h1>
+        </div>
+        <div class="receipt-title">
+            <h2>Payment Receipt</h2>
+            <div class="receipt-status {% if order.paid %}paid{% else %}pending{% endif %}">
+                {% if order.paid %}✓ Paid{% else %}⏳ Pending{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="receipt-body">
+        <!-- Order Information -->
+        <div class="receipt-section">
+            <h3>Order Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Order ID:</label>
+                    <span>#{{ order.id }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Transaction Ref:</label>
+                    <span>{{ order.chapa_tx_ref }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Order Date:</label>
+                    <span>{{ order.created|date:"F d, Y H:i" }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Payment Status:</label>
+                    <span class="{% if order.paid %}status-paid{% else %}status-pending{% endif %}">
+                        {% if order.paid %}Completed{% else %}Pending{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="receipt-section">
+            <h3>Customer Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Name:</label>
+                    <span>{{ order.first_name }} {{ order.last_name }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Email:</label>
+                    <span>{{ order.email }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="receipt-section">
+            <h3>Order Items</h3>
+            <div class="items-table">
+                <div class="table-header">
+                    <div class="col-item">Item</div>
+                    <div class="col-qty">Qty</div>
+                    <div class="col-price">Price</div>
+                    <div class="col-total">Total</div>
+                </div>
+                {% for item in order_items %}
+                <div class="table-row">
+                    <div class="col-item">{{ item.product.name }}</div>
+                    <div class="col-qty">{{ item.quantity }}</div>
+                    <div class="col-price">Birr {{ item.price }}</div>
+                    <div class="col-total">Birr {{ item.get_cost }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="receipt-section">
+            <h3>Order Summary</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <label>Subtotal:</label>
+                    <span>Birr {{ order.get_total_cost }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Delivery:</label>
+                    <span>Birr 0.00</span>
+                </div>
+                <div class="summary-item total">
+                    <label>Total Amount:</label>
+                    <span>Birr {{ order.get_total_cost }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="receipt-footer">
+        <div class="receipt-actions">
+            <a href="{% url 'order:receipt_pdf' order.id %}" class="btn-download">
+                Download Receipt
+            </a>
+            <a href="{% url 'shop:product-list' %}" class="btn-continue">
+                Continue Shopping
+            </a>
+        </div>
+        <div class="receipt-note">
+            <p>Thank you for choosing Care Coffee!</p>
+            <p>For any questions, please contact us at support@carecoffee.com</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

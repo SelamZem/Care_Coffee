@@ -35,6 +35,24 @@ def register_view(request):
         user_form = RegistrationForm(request.POST)
         profile_form= ProfileEditForm(request.POST, request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
+            # Additional database checks to prevent IntegrityError
+            username = user_form.cleaned_data.get('username')
+            email = user_form.cleaned_data.get('email')
+            
+            if User.objects.filter(username=username).exists():
+                user_form.add_error('username', 'Username already exists')
+                return render(
+                    request, 
+                    'account/registration.html', 
+                    {'user_form': user_form, 'profile_form':profile_form})
+            
+            if User.objects.filter(email=email).exists():
+                user_form.add_error('email', 'Email already exists')
+                return render(
+                    request, 
+                    'account/registration.html', 
+                    {'user_form': user_form, 'profile_form':profile_form})
+            
             user=user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
             user.save()
@@ -61,6 +79,7 @@ def register_view(request):
         'account/registration.html', 
         {'user_form': user_form, 'profile_form':profile_form}
     )
+
 
 @login_required
 def show_profile(request):

@@ -17,7 +17,7 @@
             {% if form.instance.photo %}
                 <img src="{{ form.instance.photo.url }}" alt="Profile Photo" class="profile-photo" />
             {% else %}
-                <img src="{% static 'users/default/default.jpg' %}" alt="Default Profile Photo" class="profile-photo" />
+                <img src="{% static 'img/placeholder.png' %}" alt="Default Profile Photo" class="profile-photo" />
             {% endif %}
         </div>
 

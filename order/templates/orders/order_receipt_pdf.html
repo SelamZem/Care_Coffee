@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt - Order #{{ order.id }}</title>
+</head>
+<body>
+    <div class="receipt-header">
+        <h1>Care Coffee</h1>
+        <h2>Payment Receipt</h2>
+        <div class="receipt-status {% if order.paid %}paid{% else %}pending{% endif %}">
+            {% if order.paid %}✓ Paid{% else %}⏳ Pending{% endif %}
+        </div>
+    </div>
+
+    <div class="receipt-body">
+        <!-- Order Information -->
+        <div class="receipt-section">
+            <h3>Order Information</h3>
+            <div class="info-item">
+                <label>Order ID:</label>
+                <span>#{{ order.id }}</span>
+            </div>
+            <div class="info-item">
+                <label>Transaction Ref:</label>
+                <span>{{ order.chapa_tx_ref }}</span>
+            </div>
+            <div class="info-item">
+                <label>Order Date:</label>
+                <span>{{ order.created|date:"F d, Y H:i" }}</span>
+            </div>
+            <div class="info-item">
+                <label>Payment Status:</label>
+                <span class="{% if order.paid %}status-paid{% else %}status-pending{% endif %}">
+                    {% if order.paid %}Completed{% else %}Pending{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="receipt-section">
+            <h3>Customer Information</h3>
+            <div class="info-item">
+                <label>Name:</label>
+                <span>{{ order.first_name }} {{ order.last_name }}</span>
+            </div>
+            <div class="info-item">
+                <label>Email:</label>
+                <span>{{ order.email }}</span>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="receipt-section">
+            <h3>Order Items</h3>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Birr {{ item.price }}</td>
+                        <td>Birr {{ item.get_cost }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="receipt-section">
+            <h3>Order Summary</h3>
+            <div class="summary-item">
+                <label>Subtotal:</label>
+                <span>Birr {{ order.get_total_cost }}</span>
+            </div>
+            <div class="summary-item">
+                <label>Delivery:</label>
+                <span>Birr 0.00</span>
+            </div>
+            <div class="summary-item total">
+                <label>Total Amount:</label>
+                <span>Birr {{ order.get_total_cost }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="receipt-footer">
+        <p>Thank you for choosing Care Coffee!</p>
+        <p>For any questions, please contact us at support@carecoffee.com</p>
+    </div>
+</body>
+</html>

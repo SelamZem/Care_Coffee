@@ -1,0 +1,21 @@
+/* Fix for circular profile images */
+.account-icon {
+    width: 35px !important;
+    height: 35px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    object-fit: cover !important;
+    cursor: pointer;
+    border: 2px solid #d4a574 !important;
+    display: block !important;
+}
+
+.profile-photo {
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    object-fit: cover !important;
+    border: 4px solid #d4a574 !important;
+    display: block !important;
+}

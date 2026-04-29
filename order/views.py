@@ -187,14 +187,107 @@ def chapa_callback(request):
 @login_required(login_url='account:login')
 def order_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+    
+    # Verify payment status directly from Chapa API if not already paid
+    if not order.paid and order.chapa_tx_ref:
+        headers = {"Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}"}
+        try:
+            response = requests.get(
+                f"https://api.chapa.co/v1/transaction/verify/{order.chapa_tx_ref}",
+                headers=headers,
+                timeout=10
+            )
+            response.raise_for_status()
+            verification_data = response.json()
+            
+            # Update order status if payment is verified
+            if (verification_data.get('status') == 'success' and 
+                verification_data.get('data', {}).get('status') == 'success'):
+                order.paid = True
+                order.save()
+                print(f"Order {order.id} marked as paid via direct verification")
+        except requests.RequestException as e:
+            print(f"Error verifying payment for order {order.id}: {e}")
+    
     chapa_receipt = f"https://checkout.chapa.co/receipt/{order.chapa_tx_ref}" if order.paid else None
-    return render(request, 'orders/order_success.html', {
+    return render(request, 'orders/order_receipt.html', {
         'order': order,
-        'chapa_receipt': chapa_receipt
+        'chapa_receipt': chapa_receipt,
+        'order_items': order.items.all()
     })
 
 @login_required(login_url='account:login')
 def payment_failed(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, 'orders/order_payment_failed.html', {'order': order})
+
+@login_required(login_url='account:login')
+def receipt_pdf(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    html = render_to_string('orders/order_receipt_pdf.html', {
+        'order': order,
+        'order_items': order.items.all()
+    })
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=receipt_{order.id}.pdf'
+    weasyprint.HTML(string=html).write_pdf(
+        response,
+        stylesheets=[weasyprint.CSS(string='''
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+            }
+            .receipt-header {
+                text-align: center;
+                margin-bottom: 2rem;
+                border-bottom: 2px solid #d4a574;
+                padding-bottom: 1rem;
+            }
+            .receipt-section {
+                margin-bottom: 1.5rem;
+            }
+            .receipt-section h3 {
+                color: #2c1810;
+                border-bottom: 1px solid #e9ecef;
+                padding-bottom: 0.5rem;
+            }
+            .info-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.5rem;
+                background: #f8f9fa;
+                margin-bottom: 0.5rem;
+            }
+            .items-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .items-table th, .items-table td {
+                border: 1px solid #dee2e6;
+                padding: 0.5rem;
+                text-align: left;
+            }
+            .items-table th {
+                background: #d4a574;
+                color: white;
+            }
+            .summary-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+            .summary-item.total {
+                font-weight: bold;
+                font-size: 1.2rem;
+                border-top: 2px solid #d4a574;
+                padding-top: 1rem;
+            }
+        ''')]
+    )
+    return response
 

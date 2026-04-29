@@ -27,3 +27,5 @@ zopfli==0.2.3.post1
 chapa
 gunicorn
 whitenoise
+dj-database-url
+psycopg2-binary

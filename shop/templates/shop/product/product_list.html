@@ -24,21 +24,28 @@
         </form>
     </div>
 
-    <div class="product-grid">
-        {% for product in products %}
-        <div class="product-card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <img src="{% static 'img/placeholder.png' %}" alt="No Image">
-            {% endif %}
-            <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">${{ product.price }}</div>
-              <a href="{% url 'shop:product_detail' product.id product.slug %}" class="detail-arrow"> →</a>  
+    <div class="products-container">
+        <div class="products-header">
+            <h2>Our Collection</h2>
+            <div class="products-count">{{ products|length }} products available</div>
         </div>
-        {% empty %}
-        <p>No products available.</p>
-        {% endfor %}
+        
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="{% static 'img/placeholder.png' %}" alt="No Image">
+                {% endif %}
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-price">${{ product.price }}</div>
+                  <a href="{% url 'shop:product_detail' product.id product.slug %}" class="detail-arrow"> →</a>  
+            </div>
+            {% empty %}
+            <p>No products available.</p>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

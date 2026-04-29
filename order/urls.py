@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('pay/<int:order_id>/', views.order_pay, name='order_pay'),
     path('success/<int:order_id>/', views.order_success, name='order_success'),
+    path('success/<int:order_id>/pdf/', views.receipt_pdf, name='receipt_pdf'),
 
     path('failed/<int:order_id>/', views.payment_failed, name='payment_failed'),
 

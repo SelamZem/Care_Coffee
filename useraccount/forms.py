@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from .models import Profile
 
 class LoginForm(forms.Form):
@@ -42,6 +44,15 @@ class RegistrationForm(forms.ModelForm):
         fields = ['username', 'email', 'password']
 
     # check password similarity with clean data(it is dictionary)
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+        if password:
+            try:
+                validate_password(password, user=None)
+            except ValidationError as e:
+                raise forms.ValidationError(e.messages)
+        return password
+    
     def clean_confirm_password(self):
         cd = self.cleaned_data
         password = cd.get("password")
