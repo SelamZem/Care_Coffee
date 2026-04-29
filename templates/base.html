@@ -25,9 +25,9 @@
               {% if user.is_authenticated %}
                 <div class="account-dropdown">
                     {% if user.profile.photo %}
-                      <img src="{{ user.profile.photo.url }}" alt="Profile Photo" class="account-icon" />
+                      <img src="{{ user.profile.get_photo_base64 }}" alt="Profile Photo" class="account-icon" />
                     {% else %}
-                      <img src="{% static 'img/placeholder.png' %}" alt="Default Photo" class="account-icon" />
+                      <img src="{% static 'img/placeholder.png' %}" alt="Profile Photo" class="account-icon" />
                     {% endif %}
 
                   <div class="dropdown-menu">

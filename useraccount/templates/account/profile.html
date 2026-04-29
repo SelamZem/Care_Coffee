@@ -9,9 +9,9 @@
 <div class="profile-card">
     <div class="profile-photo-container">
         {% if user.profile.photo %}
-            <img src="{{ user.profile.photo.url }}" alt="Profile Photo" class="profile-photo" />
+            <img src="{{ user.profile.get_photo_base64 }}" alt="Profile Photo" class="profile-photo" />
         {% else %}
-            <img src="{% static 'img/placeholder.png' %}" alt="Default Profile Photo" class="profile-photo" />
+            <img src="{% static 'img/placeholder.png' %}" alt="Profile Photo" class="profile-photo" />
         {% endif %}
     </div>
 
