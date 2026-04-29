@@ -34,7 +34,7 @@
             {% for product in products %}
             <div class="product-card">
                 {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <img src="{{ product.get_image_base64 }}" alt="{{ product.name }}">
                 {% else %}
                     <img src="{% static 'img/placeholder.png' %}" alt="No Image">
                 {% endif %}

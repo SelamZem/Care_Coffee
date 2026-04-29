@@ -1,4 +1,7 @@
 from django.db import models
+import base64
+from pathlib import Path
+from django.conf import settings
 
 # Create your models here.
 
@@ -48,3 +51,36 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_image_base64(self):
+        """Return image as base64 encoded string for embedding in HTML"""
+        try:
+            if self.image:
+                # Try to read the actual uploaded file
+                image_path = Path(settings.MEDIA_ROOT) / self.image.name
+                if image_path.exists():
+                    with open(image_path, 'rb') as image_file:
+                        encoded = base64.b64encode(image_file.read()).decode('utf-8')
+                        # Determine image type
+                        if image_path.suffix.lower() in ['.jpg', '.jpeg']:
+                            return f'data:image/jpeg;base64,{encoded}'
+                        elif image_path.suffix.lower() == '.png':
+                            return f'data:image/png;base64,{encoded}'
+                        elif image_path.suffix.lower() == '.gif':
+                            return f'data:image/gif;base64,{encoded}'
+                        elif image_path.suffix.lower() == '.webp':
+                            return f'data:image/webp;base64,{encoded}'
+                        else:
+                            return f'data:image/jpeg;base64,{encoded}'
+            
+            # Return placeholder if no image or file doesn't exist
+            placeholder_path = Path(settings.BASE_DIR) / 'static' / 'img' / 'placeholder.png'
+            if placeholder_path.exists():
+                with open(placeholder_path, 'rb') as image_file:
+                    encoded = base64.b64encode(image_file.read()).decode('utf-8')
+                    return f'data:image/png;base64,{encoded}'
+            
+            # Final fallback - return empty string
+            return ''
+        except Exception:
+            return ''
