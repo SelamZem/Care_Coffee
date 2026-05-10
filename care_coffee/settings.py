@@ -34,6 +34,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:60536",
     "http://127.0.0.1:60544",
     "http://localhost:60544",
+    "http://127.0.0.1:50092",
+    "http://localhost:50092",
 ]
 
 
@@ -252,3 +254,4 @@ else:
 
 CHAPA_CALLBACK_URL = f"{BASE_URL}/order/chapa/webhook/"
 CHAPA_RETURN_URL = f"{BASE_URL}/order/success/{{order_id}}/"
+CHAPA_FAILURE_RETURN_URL = f"{BASE_URL}/order/failed/{{order_id}}/"

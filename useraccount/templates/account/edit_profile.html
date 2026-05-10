@@ -6,44 +6,59 @@
 {% endblock %}
 
 {% block content %}
-<div class="form-card">
-    <h2>Edit Your Profile</h2>
-
-    <form method="POST" enctype="multipart/form-data" class="profile-form">
-        {% csrf_token %}
-
-        <!-- Profile Photo Preview -->
-        <div class="profile-photo-preview">
-            {% if form.instance.photo %}
-                <img src="{{ form.instance.photo.url }}" alt="Profile Photo" class="profile-photo" />
-            {% else %}
-                <img src="{% static 'img/placeholder.png' %}" alt="Default Profile Photo" class="profile-photo" />
-            {% endif %}
+<div class="edit-profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <h2>Edit Profile</h2>
+            <p>Update your personal information</p>
         </div>
 
-        <!-- Form Fields -->
-        <div class="form-group">
-            <label for="{{ form.first_name.id_for_label }}">First Name</label>
-            {{ form.first_name }}
+        <form method="POST" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+
+            <!-- Profile Photo Section -->
+            <div class="profile-photo-section">
+                <div class="profile-photo-wrapper">
+                    {% if form.instance.photo %}
+                        <img src="{{ form.instance.get_photo_base64 }}" alt="Profile Photo" class="profile-photo" />
+                    {% else %}
+                        <img src="{% static 'img/placeholder.png' %}" alt="Default Profile Photo" class="profile-photo" />
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+
+            <div class="form-group">
+                <label>Profile Photo</label>
+                <div class="file-input-wrapper">
+                    <label for="{{ form.photo.id_for_label }}" class="file-input-label">
+                        📷 Choose a new photo
+                    </label>
+                    {{ form.photo }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Save Changes</button>
+        </form>
+
+        <div class="profile-footer">
+            <a href="{% url 'account:show_profile' %}">← Back to Profile</a>
         </div>
-
-        <div class="form-group">
-            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-            {{ form.last_name }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
-            {{ form.phone_number }}
-        </div>
-
-        <div class="form-group">
-            {{ form.photo.label_tag }}  
-            {{ form.photo }}            
-
-        </div>
-
-        <button type="submit" class="btn-submit">Save Changes</button>
-    </form>
+    </div>
 </div>
 {% endblock %}

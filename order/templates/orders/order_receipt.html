@@ -9,16 +9,52 @@
 <div class="receipt-container">
     <div class="receipt-header">
         <div class="receipt-logo">
-            <img src="/media/logos/logo.jpg" alt="Care Coffee Logo" class="logo-img">
+            <img src="/static/logos/logo.jpg" alt="Care Coffee Logo" class="logo-img">
             <h1>Care Coffee</h1>
         </div>
         <div class="receipt-title">
-            <h2>Payment Receipt</h2>
-            <div class="receipt-status {% if order.paid %}paid{% else %}pending{% endif %}">
-                {% if order.paid %}✓ Paid{% else %}⏳ Pending{% endif %}
-            </div>
+            {% if payment_failed %}
+                <h2>Payment Failed</h2>
+                <div class="receipt-status failed">
+                    ✗ Failed
+                </div>
+            {% elif payment_pending %}
+                <h2>Payment Pending</h2>
+                <div class="receipt-status pending">
+                    ⏳ Pending
+                </div>
+            {% elif order.paid %}
+                <h2>Payment Receipt</h2>
+                <div class="receipt-status paid">
+                    ✓ Paid
+                </div>
+            {% else %}
+                <h2>Payment Receipt</h2>
+                <div class="receipt-status pending">
+                    ⏳ Pending
+                </div>
+            {% endif %}
         </div>
     </div>
+
+    {% if payment_failed %}
+    <div class="receipt-message failed">
+        <p>Hi {{ order.first_name }}, unfortunately your payment could not be processed.</p>
+        <p><strong>Reason:</strong> 
+            {% if failure_reason == 'failed' %}Payment declined by bank{% endif %}
+            {% if failure_reason == 'cancelled' %}Payment was cancelled{% endif %}
+            {% if failure_reason == 'declined' %}Payment declined{% endif %}
+            {% if failure_reason == 'error' %}Unable to verify payment{% endif %}
+            {% if failure_reason == 'not_attempted' %}Payment was not completed{% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if payment_pending %}
+    <div class="receipt-message pending">
+        <p>Your payment is still being processed. Please check back later or contact support if the issue persists.</p>
+    </div>
+    {% endif %}
 
     <div class="receipt-body">
         <!-- Order Information -->
@@ -31,7 +67,7 @@
                 </div>
                 <div class="info-item">
                     <label>Transaction Ref:</label>
-                    <span>{{ order.chapa_tx_ref }}</span>
+                    <span>{{ order.chapa_tx_ref|default:"N/A" }}</span>
                 </div>
                 <div class="info-item">
                     <label>Order Date:</label>
@@ -39,8 +75,8 @@
                 </div>
                 <div class="info-item">
                     <label>Payment Status:</label>
-                    <span class="{% if order.paid %}status-paid{% else %}status-pending{% endif %}">
-                        {% if order.paid %}Completed{% else %}Pending{% endif %}
+                    <span class="{% if order.paid %}status-paid{% elif payment_failed %}status-failed{% else %}status-pending{% endif %}">
+                        {% if order.paid %}Completed{% elif payment_failed %}Failed{% else %}Pending{% endif %}
                     </span>
                 </div>
             </div>
@@ -104,15 +140,44 @@
 
     <div class="receipt-footer">
         <div class="receipt-actions">
-            <a href="{% url 'order:receipt_pdf' order.id %}" class="btn-download">
-                Download Receipt
-            </a>
-            <a href="{% url 'shop:product-list' %}" class="btn-continue">
-                Continue Shopping
-            </a>
+            {% if payment_failed %}
+                <a href="{% url 'order:order_pay' order.id %}" class="btn-retry">
+                    Try Again
+                </a>
+                <a href="{% url 'shop:product-list' %}" class="btn-continue">
+                    Back to Shop
+                </a>
+            {% elif payment_pending %}
+                <a href="{% url 'order:order_success' order.id %}" class="btn-check">
+                    Check Status
+                </a>
+                <a href="{% url 'shop:product-list' %}" class="btn-continue">
+                    Back to Shop
+                </a>
+            {% elif order.paid %}
+                <a href="{% url 'order:receipt_pdf' order.id %}" class="btn-download">
+                    Download Receipt
+                </a>
+                <a href="{% url 'shop:product-list' %}" class="btn-continue">
+                    Continue Shopping
+                </a>
+            {% else %}
+                <a href="{% url 'order:order_success' order.id %}" class="btn-check">
+                    Check Status
+                </a>
+                <a href="{% url 'shop:product-list' %}" class="btn-continue">
+                    Back to Shop
+                </a>
+            {% endif %}
         </div>
         <div class="receipt-note">
-            <p>Thank you for choosing Care Coffee!</p>
+            {% if payment_failed %}
+                <p>Please check your payment details and try again.</p>
+            {% elif order.paid %}
+                <p>Thank you for choosing Care Coffee!</p>
+            {% else %}
+                <p>Your payment is being processed. Please check back shortly.</p>
+            {% endif %}
             <p>For any questions, please contact us at support@carecoffee.com</p>
         </div>
     </div>

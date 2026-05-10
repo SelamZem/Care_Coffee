@@ -2,49 +2,53 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'useraccount/css/user.css' %}">
+<link rel="stylesheet" href="{% static 'useraccount/css/login.css' %}">
 {% endblock %}
 
-
 {% block content %}
-<div class="form-card">
-    <div class="top-right-link">
-        Don't have an account? <a href="{% url 'account:register' %}">Sign Up</a>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to your Care Coffee account</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-login">Sign In</button>
+            
+            <div class="forgot-password">
+                <a href="{% url 'account:request-password-reset' %}">Forgot your password?</a>
+            </div>
+        </form>
+
+        <div class="login-footer">
+            <p>Don't have an account? <a href="{% url 'account:register' %}">Create one</a></p>
+        </div>
     </div>
-
-    <h2>Login</h2>
-
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.GET.next }}">
-        
-        {% if form.non_field_errors %}
-            <ul>
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        {% for field in form %}
-            <p>
-                {{ field.label_tag }}<br>
-                {{ field }}
-                {% if field.errors %}
-                    <ul>
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </p>
-        {% endfor %}
-
-        <button type="submit">Login</button>
-        <p class="forgot-password-link">
-            <a href="{%url 'account:request-password-reset' %}">Forgot your password?</a>
-        </p>
-
-    </form>
 </div>
 {% endblock %}

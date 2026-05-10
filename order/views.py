@@ -98,6 +98,11 @@ def order_pay(request, order_id):
 
     callback_url = settings.CHAPA_CALLBACK_URL
     return_url = settings.CHAPA_RETURN_URL.format(order_id=order_id)
+    failure_url = settings.CHAPA_FAILURE_RETURN_URL.format(order_id=order_id)
+    
+    print(f"Chapa return URL: {return_url}")
+    print(f"Chapa failure URL: {failure_url}")
+    print(f"Chapa callback URL: {callback_url}")
 
     data = {
         "amount": str(float(order.get_total_cost())),
@@ -109,7 +114,8 @@ def order_pay(request, order_id):
         "callback_url": callback_url,
         "return_url": return_url,
         "customization[title]": "Care Coffee Shop",
-        "customization[description]": f"Payment for Order #{order.id}"
+        "customization[description]": f"Payment for Order #{order.id}",
+        "customization[logo]": f"{settings.BASE_URL}/static/logos/logo.jpg"
     }
 
     headers = {
@@ -128,8 +134,16 @@ def order_pay(request, order_id):
         checkout_url = res.get('data', {}).get('checkout_url')
         if res.get('status') == 'success' and checkout_url:
             return redirect(checkout_url)
+        else:
+            # Log the error response from Chapa
+            print(f"Chapa error: {res}")
+            messages.error(request, f"Payment failed: {res.get('message', 'Unknown error')}")
 
-    except Exception:
+    except requests.RequestException as e:
+        print(f"Payment request error: {e}")
+        messages.error(request, "Network error. Please check your connection and try again.")
+    except Exception as e:
+        print(f"Payment initialization error: {e}")
         messages.error(request, "Payment initialization failed. Please try again.")
 
     return redirect('order:payment_failed', order_id=order.id)
@@ -174,22 +188,54 @@ def chapa_callback(request):
         print("Error verifying payment with Chapa:", e)
         return JsonResponse({"status": "error", "message": "Payment verification failed"}, status=500)
 
-    if verification_data.get('status') == 'success' and verification_data.get('data', {}).get('status') == 'success':
+    # Check for success - Chapa can return different status values
+    top_status = verification_data.get('status')
+    data_status = verification_data.get('data', {}).get('status') if verification_data.get('data') else None
+    
+    print(f"Verification status - top: {top_status}, data: {data_status}")
+    
+    if top_status == 'success' and data_status in ['success', 'completed', 'paid']:
         if not order.paid:
             order.paid = True
+            order.payment_status = 'paid'
             order.save()
-            print(f"Order {order.id} marked as paid")
+            print(f"Order {order.id} marked as paid via webhook")
         return JsonResponse({"status": "success", "message": "Payment verified"}, status=200)
+    
+    # Payment failed/cancelled - update status
+    elif data_status in ['failed', 'cancelled', 'declined']:
+        order.payment_status = data_status
+        order.save()
+        print(f"Order {order.id} marked as {data_status} via webhook")
+        return JsonResponse({"status": "success", "message": f"Payment {data_status} recorded"}, status=200)
 
-    print(f"Payment verification failed for order {order.id}")
+    print(f"Payment verification failed for order {order.id}. Status: {data_status}")
     return JsonResponse({"status": "error", "message": "Payment verification failed"}, status=400)
 
 @login_required(login_url='account:login')
 def order_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     
-    # Verify payment status directly from Chapa API if not already paid
-    if not order.paid and order.chapa_tx_ref:
+    # If already paid, show receipt
+    if order.paid:
+        chapa_receipt = f"https://checkout.chapa.co/receipt/{order.chapa_tx_ref}"
+        return render(request, 'orders/order_receipt.html', {
+            'order': order,
+            'chapa_receipt': chapa_receipt,
+            'order_items': order.items.all()
+        })
+    
+    # Check if payment failed/cancelled via webhook
+    if order.payment_status in ['failed', 'cancelled']:
+        return render(request, 'orders/order_receipt.html', {
+            'order': order,
+            'payment_failed': True,
+            'failure_reason': order.payment_status,
+            'order_items': order.items.all()
+        })
+    
+    # Verify payment with Chapa
+    if order.chapa_tx_ref:
         headers = {"Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}"}
         try:
             response = requests.get(
@@ -200,26 +246,62 @@ def order_success(request, order_id):
             response.raise_for_status()
             verification_data = response.json()
             
-            # Update order status if payment is verified
-            if (verification_data.get('status') == 'success' and 
-                verification_data.get('data', {}).get('status') == 'success'):
+            print(f"=== CHAPA VERIFY RESPONSE ===")
+            print(f"Response data: {verification_data}")
+            
+            # Check Chapa response status
+            chapa_status = verification_data.get('data', {}).get('status') if verification_data.get('data') else None
+            
+            print(f"Chapa status: {chapa_status}")
+            print(f"=== END RESPONSE ===")
+            
+            # SUCCESS - payment completed
+            if chapa_status in ['success', 'completed', 'paid']:
                 order.paid = True
+                order.payment_status = 'paid'
                 order.save()
-                print(f"Order {order.id} marked as paid via direct verification")
-        except requests.RequestException as e:
-            print(f"Error verifying payment for order {order.id}: {e}")
+                chapa_receipt = f"https://checkout.chapa.co/receipt/{order.chapa_tx_ref}"
+                return render(request, 'orders/order_receipt.html', {
+                    'order': order,
+                    'chapa_receipt': chapa_receipt,
+                    'order_items': order.items.all()
+                })
+            
+            # FAILURE - payment failed/cancelled
+            elif chapa_status in ['failed', 'cancelled', 'declined']:
+                order.payment_status = chapa_status
+                order.save()
+                return render(request, 'orders/order_receipt.html', {
+                    'order': order,
+                    'payment_failed': True,
+                    'failure_reason': chapa_status,
+                    'order_items': order.items.all()
+                })
+            
+            # Unknown status - check again later
+            else:
+                return render(request, 'orders/order_receipt.html', {
+                    'order': order,
+                    'payment_pending': True,
+                    'order_items': order.items.all()
+                })
+                
+        except Exception:
+            # Error verifying
+            return render(request, 'orders/order_receipt.html', {
+                'order': order,
+                'payment_failed': True,
+                'failure_reason': 'error',
+                'order_items': order.items.all()
+            })
     
-    chapa_receipt = f"https://checkout.chapa.co/receipt/{order.chapa_tx_ref}" if order.paid else None
+    # No transaction reference - payment was not attempted
     return render(request, 'orders/order_receipt.html', {
         'order': order,
-        'chapa_receipt': chapa_receipt,
+        'payment_failed': True,
+        'failure_reason': 'not_attempted',
         'order_items': order.items.all()
     })
-
-@login_required(login_url='account:login')
-def payment_failed(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    return render(request, 'orders/order_payment_failed.html', {'order': order})
 
 @login_required(login_url='account:login')
 def receipt_pdf(request, order_id):
