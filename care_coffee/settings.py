@@ -78,8 +78,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
 
 ]
 
@@ -203,7 +201,7 @@ AUTHENTICATION_BACKENDS = [
 
 
 
-# google
+# allauth settings
 
 ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
 ACCOUNT_LOGIN_METHOD = ['email']
@@ -212,23 +210,7 @@ ACCOUNT_SIGNUP_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/account/login/'
 
-SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_QUERY_EMAIL = True
-
-SOCIALACCOUNT_ADAPTER = 'useraccount.adapters.MySocialAccountAdapter'
 ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'APP': {
-            'client_id': config("SOCIAL_AUTH_GOOGLE_CLIENT_ID"),
-            'secret': config("SOCIAL_AUTH_GOOGLE_SECRET"),
-            'key': ''
-        }
-    }
-}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

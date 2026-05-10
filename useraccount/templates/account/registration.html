@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% load socialaccount %}
-
 {% load static %}
 
 {% block extra_css %}
@@ -47,7 +45,5 @@
 
         <button type="submit">Sign Up</button>
     </form>
-
-    <a href="{% provider_login_url 'google' method='oauth2' %}" class="google-btn">Sign Up with Google</a>
 </div>
 {% endblock %}
