@@ -62,8 +62,6 @@ def serve_media(request, path):
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('accounts/', include('allauth.urls')), 
-
     path('account/', include('useraccount.urls', namespace="account")), 
     path('cart/', include('cart.urls', namespace='cart')),
     path('order/', include('order.urls', namespace='order')),
