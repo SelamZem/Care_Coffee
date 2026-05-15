@@ -22,8 +22,8 @@
     <tbody>
         {% for item in cart %}
         <tr>
-            <td>{{ item.product.name }}</td>
-            <td>
+            <td data-label="Product">{{ item.product.name }}</td>
+            <td data-label="Quantity">
                 <form method="post" action="{% url 'cart:cart_add' item.product.id %}">
                     {% csrf_token %}
                     {{ item.update_quantity_form.quantity }}
@@ -31,9 +31,9 @@
                     <button type="submit" class="btn-update">Update</button>
                 </form>
             </td>
-            <td>${{ item.price }}</td>
-            <td>${{ item.total_price }}</td>
-            <td>
+            <td data-label="Price">${{ item.price }}</td>
+            <td data-label="Total">${{ item.total_price }}</td>
+            <td data-label="Action">
                 <form method="post" action="{% url 'cart:cart_remove' item.product.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn-remove">Remove</button>

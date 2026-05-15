@@ -10,17 +10,17 @@
 
 <div class="container">
     <div class="sidebar">
-        <form method="get">
+        <form method="get" id="categoryFilterForm">
 
             <h4>Filter by Category</h4>
             {% for category in categories %}
                 <label>
                     <input type="checkbox" name="category" value="{{ category.slug }}"
-                        {% if category.slug in selected_categories %}checked{% endif %}>
+                        {% if category.slug in selected_categories %}checked{% endif %}
+                        onchange="document.getElementById('categoryFilterForm').submit()">
                     {{ category.name }}
                 </label>
             {% endfor %}
-            <button type="submit" class="apply-btn">Apply</button>
         </form>
     </div>
 

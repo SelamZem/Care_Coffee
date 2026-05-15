@@ -5,6 +5,7 @@ app_name = 'order'
 
 urlpatterns = [
     path('create/', views.order_create, name='order_create'),
+    path('history/', views.order_history, name='order_history'),
     path('admin/order/<int:order_id>/', views.admin_order_detail, name='admin_order_detail'),
     path('admin/order/<int:order_id>/pdf/', views.admin_order_pdf, name='admin_order_pdf'),
 
@@ -13,5 +14,4 @@ urlpatterns = [
     path('success/<int:order_id>/pdf/', views.receipt_pdf, name='receipt_pdf'),
 
     path('chapa/webhook/', views.chapa_callback, name='chapa_callback'),
-
 ]

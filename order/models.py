@@ -1,18 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField()
 
-    chapa_tx_ref = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    chapa_tx_ref = models.CharField(max_length=100, blank=True, null=True)
     paid = models.BooleanField(default=False)
     PAYMENT_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('paid', 'Paid'),
-        ('failed', 'Failed'),
         ('cancelled', 'Cancelled'),
     ]
     payment_status = models.CharField(

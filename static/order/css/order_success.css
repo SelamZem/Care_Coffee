@@ -1,0 +1,86 @@
+/* Order Success Styles */
+.order-card-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+}
+
+.order-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(44, 24, 16, 0.12);
+    padding: 3rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.order-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #d4a574, #b8935f, #d4a574);
+}
+
+.order-card h1 {
+    color: #2c1810;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid #d4a574;
+    padding-bottom: 0.75rem;
+    display: inline-block;
+}
+
+.order-card p {
+    color: #555;
+    font-size: 1.05rem;
+    margin: 0.6rem 0;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.order-card p strong {
+    color: #2c1810;
+}
+
+.btn-submit {
+    display: inline-block;
+    margin: 0.5rem 0.25rem;
+    padding: 0.875rem 1.75rem;
+    background: linear-gradient(135deg, #d4a574, #b8935f);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #b8935f, #9c7a4f);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 165, 116, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .order-card {
+        padding: 2rem 1.25rem;
+    }
+
+    .order-card h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn-submit {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0;
+        text-align: center;
+    }
+}

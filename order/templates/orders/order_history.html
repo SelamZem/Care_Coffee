@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Orders – Care Coffee{% endblock %}
+
+{% block extra_css %}
+<style>
+.orders-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.orders-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #d4a574;
+}
+
+.orders-header h1 {
+    color: #2c1810;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.orders-count {
+    color: #666;
+    font-size: 1rem;
+}
+
+.order-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    border-left: 5px solid #d4a574;
+}
+
+.order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.order-id {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c1810;
+}
+
+.order-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.order-status {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-paid {
+    background: #d4f4dd;
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.status-failed,
+.status-cancelled {
+    background: #fee2e2;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.order-items {
+    margin: 1rem 0;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    color: #555;
+}
+
+.item-name {
+    flex: 1;
+}
+
+.item-qty {
+    margin: 0 1rem;
+    color: #888;
+}
+
+.item-price {
+    font-weight: 600;
+    color: #2c1810;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.order-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c1810;
+}
+
+.order-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-view,
+.btn-retry {
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-view {
+    background: #d4a574;
+    color: white;
+}
+
+.btn-view:hover {
+    background: #b8935f;
+    transform: translateY(-2px);
+}
+
+.btn-retry {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-retry:hover {
+    background: #545b62;
+    transform: translateY(-2px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.empty-state h2 {
+    color: #2c1810;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.btn-shop {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: #d4a574;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-shop:hover {
+    background: #b8935f;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .orders-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-actions {
+        width: 100%;
+    }
+
+    .btn-view,
+    .btn-retry {
+        flex: 1;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+    <div class="orders-header">
+        <h1>My Orders</h1>
+        <p class="orders-count">{{ orders|length }} order{{ orders|length|pluralize }}</p>
+    </div>
+
+    {% if orders %}
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <div class="order-id">Order #{{ order.id }}</div>
+                    <div class="order-date">{{ order.created|date:"F d, Y - g:i A" }}</div>
+                    {% if order.chapa_tx_ref %}
+                    <div class="order-date" style="font-size: 0.8rem; color: #999;">Tx: {{ order.chapa_tx_ref|truncatechars:20 }}</div>
+                    {% endif %}
+                </div>
+                <div>
+                    <span class="order-status status-{{ order.payment_status }}">
+                        {% if order.paid %}✓ Paid
+                        {% elif order.payment_status == 'pending' %}⏳ Pending
+                        {% elif order.payment_status == 'failed' %}✗ Failed
+                        {% elif order.payment_status == 'cancelled' %}✗ Cancelled
+                        {% else %}{{ order.payment_status|title }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="order-items">
+                {% for item in order.items.all %}
+                <div class="order-item">
+                    <span class="item-name">{{ item.product.name }}</span>
+                    <span class="item-qty">× {{ item.quantity }}</span>
+                    <span class="item-price">Birr {{ item.get_cost }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-footer">
+                <div class="order-total">
+                    Total: Birr {{ order.get_total_cost }}
+                </div>
+                <div class="order-actions">
+                    <a href="{% url 'order:order_success' order.id %}" class="btn-view">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <h2>No Orders Yet</h2>
+            <p>You haven't placed any orders. Start shopping to see your order history here.</p>
+            <a href="{% url 'shop:product-list' %}" class="btn-shop">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

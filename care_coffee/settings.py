@@ -254,4 +254,3 @@ else:
 
 CHAPA_CALLBACK_URL = f"{BASE_URL}/order/chapa/webhook/"
 CHAPA_RETURN_URL = f"{BASE_URL}/order/success/{{order_id}}/"
-CHAPA_FAILURE_RETURN_URL = f"{BASE_URL}/order/failed/{{order_id}}/"

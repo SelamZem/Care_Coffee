@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'order/css/order_receipt.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="receipt-container">
+    <div class="receipt-header">
+        <div class="receipt-logo">
+            <img src="/static/logos/logo.jpg" alt="Care Coffee Logo" class="logo-img">
+            <h1>Care Coffee</h1>
+        </div>
+        <div class="receipt-title">
+            <h2>Payment Failed</h2>
+            <div class="receipt-status" style="background: #fee2e2; color: #dc3545; border: 1px solid #dc3545;">
+                ✗ Failed
+            </div>
+        </div>
+    </div>
+
+    <div class="receipt-message" style="background: #fee2e2; border-left: 4px solid #dc3545; padding: 1rem; margin-bottom: 2rem;">
+        <p><strong>Your payment could not be processed.</strong></p>
+        <p>This could be due to insufficient funds, incorrect card details, or a network issue.</p>
+        <p>Please try again or use a different payment method.</p>
+    </div>
+
+    <div class="receipt-body">
+        <div class="receipt-section">
+            <h3>Order Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Order ID:</label>
+                    <span>#{{ order.id }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Order Date:</label>
+                    <span>{{ order.created|date:"F d, Y H:i" }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Total Amount:</label>
+                    <span>Birr {{ order.get_total_cost }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="receipt-section">
+            <h3>Order Items</h3>
+            <div class="items-table">
+                <div class="table-header">
+                    <div class="col-item">Item</div>
+                    <div class="col-qty">Qty</div>
+                    <div class="col-price">Price</div>
+                    <div class="col-total">Total</div>
+                </div>
+                {% for item in order_items %}
+                <div class="table-row">
+                    <div class="col-item">{{ item.product.name }}</div>
+                    <div class="col-qty">{{ item.quantity }}</div>
+                    <div class="col-price">Birr {{ item.price }}</div>
+                    <div class="col-total">Birr {{ item.get_cost }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="receipt-footer">
+        <div class="receipt-actions">
+            <a href="{% url 'order:order_pay' order.id %}" class="btn-submit" style="background: #d4a574; color: white; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Try Again
+            </a>
+            <a href="{% url 'shop:product-list' %}" class="btn-continue">
+                Back to Shop
+            </a>
+        </div>
+        <div class="receipt-note">
+            <p>Need help? Contact us at support@carecoffee.com</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

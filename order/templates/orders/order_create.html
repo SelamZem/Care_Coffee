@@ -34,13 +34,13 @@
                         <th>Total</th>
                     </tr>
                 </thead>
-                <tbody>
+            <tbody>
                     {% for item in cart_items %}
                     <tr>
-                        <td>{{ item.product.name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>${{ item.price }}</td>
-                        <td>${{ item.total }}</td>
+                        <td data-label="Product">{{ item.product.name }}</td>
+                        <td data-label="Quantity">{{ item.quantity }}</td>
+                        <td data-label="Price">${{ item.price }}</td>
+                        <td data-label="Total">${{ item.total }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

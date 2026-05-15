@@ -21,32 +21,61 @@
           <span class="logo-text">Care Coffee</span>
         </a>
       </div>
-            <div class="nav-right">
-              {% if user.is_authenticated %}
-                <div class="account-dropdown">
-                    {% if user.profile.photo %}
-                      <img src="{{ user.profile.get_photo_base64 }}" alt="Profile Photo" class="account-icon" />
-                    {% else %}
-                      <img src="{% static 'img/placeholder.png' %}" alt="Profile Photo" class="account-icon" />
-                    {% endif %}
 
-                  <div class="dropdown-menu">
-                    <a href="{% url 'account:show_profile' %}">My Profile</a>
-                    <a href="{% url 'account:edit_profile' %}">Edit profile</a>
-                    <a href="{% url 'account:logout' %}">Logout</a>
-                  </div>
-                </div>
+      <!-- Hamburger toggle (mobile only) -->
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <div class="nav-right">
+        {% if user.is_authenticated %}
+          <div class="account-dropdown">
+              {% if user.profile.photo %}
+                <img src="{{ user.profile.get_photo_base64 }}" alt="Profile Photo" class="account-icon" />
               {% else %}
-                <a href="{% url 'account:login' %}?next={{ request.path }}" class="btn-auth">Login</a>
+                <img src="{% static 'img/placeholder.png' %}" alt="Profile Photo" class="account-icon" />
               {% endif %}
 
+            <div class="dropdown-menu">
+              <a href="{% url 'account:show_profile' %}">My Profile</a>
+              <a href="{% url 'order:order_history' %}">My Orders</a>
+              <a href="{% url 'account:edit_profile' %}">Edit profile</a>
+              <a href="{% url 'account:logout' %}">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="{% url 'account:login' %}?next={{ request.path }}" class="btn-auth">Login</a>
+        {% endif %}
       </div>
     </nav>
   </header>
 
   <main>
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="message message-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     {% block content %}
     {% endblock %}
   </main>
+
+  <script>
+    // Hamburger menu toggle
+    const toggle = document.querySelector('.nav-toggle');
+    const navRight = document.querySelector('.nav-right');
+    if (toggle && navRight) {
+      toggle.addEventListener('click', function () {
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        navRight.classList.toggle('nav-open');
+      });
+    }
+  </script>
 </body>
 </html>
